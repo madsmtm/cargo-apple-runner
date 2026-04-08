@@ -1,7 +1,6 @@
 mod binary;
 pub mod bundle;
 mod cargo;
-pub mod process;
 pub mod sign;
 pub mod simctl;
 pub mod util;
