@@ -1,0 +1,13 @@
+# Use `cargo-apple-runner` on all Apple targets.
+[target.'cfg(target_vendor = "apple")']
+runner = [
+    "cargo",
+    "run",
+    # Avoid infinite recursion by overriding the config.
+    "--config=target.aarch64-apple-darwin.runner=\"env\"",
+    "--config=target.x86_64-apple-darwin.runner=\"env\"",
+    "--config=target.i686-apple-darwin.runner=\"env\"",
+    "--bin",
+    "cargo-apple-runner",
+    "--",
+]

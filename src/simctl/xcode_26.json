@@ -1,0 +1,338 @@
+{
+  "devicetypes": [
+    {
+      "productFamily": "iPhone",
+      "bundlePath": "\/Library\/Developer\/CoreSimulator\/Profiles\/DeviceTypes\/iPhone 17 Pro.simdevicetype",
+      "maxRuntimeVersion": 4294967295,
+      "maxRuntimeVersionString": "65535.255.255",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+      "modelIdentifier": "iPhone18,1",
+      "minRuntimeVersionString": "26.0.0",
+      "minRuntimeVersion": 1703936,
+      "name": "iPhone 17 Pro"
+    },
+    {
+      "productFamily": "iPad",
+      "bundlePath": "\/Library\/Developer\/CoreSimulator\/Profiles\/DeviceTypes\/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+      "maxRuntimeVersion": 4294967295,
+      "maxRuntimeVersionString": "65535.255.255",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+      "modelIdentifier": "iPad17,4",
+      "minRuntimeVersionString": "26.0.0",
+      "minRuntimeVersion": 1703936,
+      "name": "iPad Pro 13-inch (M5) (16GB)"
+    },
+    {
+      "productFamily": "Apple TV",
+      "bundlePath": "\/Library\/Developer\/CoreSimulator\/Profiles\/DeviceTypes\/Apple TV 4K.simdevicetype",
+      "maxRuntimeVersion": 4294967295,
+      "maxRuntimeVersionString": "65535.255.255",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-TV-4K-4K",
+      "modelIdentifier": "AppleTV6,2",
+      "minRuntimeVersionString": "11.0.0",
+      "minRuntimeVersion": 720896,
+      "name": "Apple TV 4K"
+    },
+    {
+      "productFamily": "Apple Watch",
+      "bundlePath": "\/Library\/Developer\/CoreSimulator\/Profiles\/DeviceTypes\/Apple Watch Series 11 (46mm).simdevicetype",
+      "maxRuntimeVersion": 4294967295,
+      "maxRuntimeVersionString": "65535.255.255",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-Series-11-46mm",
+      "modelIdentifier": "Watch7,18",
+      "minRuntimeVersionString": "26.0.0",
+      "minRuntimeVersion": 1703936,
+      "name": "Apple Watch Series 11 (46mm)"
+    },
+    {
+      "productFamily": "Apple Vision",
+      "bundlePath": "\/Library\/Developer\/CoreSimulator\/Profiles\/DeviceTypes\/Apple Vision Pro.simdevicetype",
+      "maxRuntimeVersion": 4294967295,
+      "maxRuntimeVersionString": "65535.255.255",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Vision-Pro-4K",
+      "modelIdentifier": "RealityDevice14,1",
+      "minRuntimeVersionString": "3.0.0",
+      "minRuntimeVersion": 196608,
+      "name": "Apple Vision Pro"
+    },
+    {
+      "productFamily": "iPhone",
+      "bundlePath": "\/Library\/Developer\/CoreSimulator\/Profiles\/DeviceTypes\/iPod touch (7th generation).simdevicetype",
+      "maxRuntimeVersion": 1048575,
+      "maxRuntimeVersionString": "15.255.255",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.iPod-touch--7th-generation-",
+      "modelIdentifier": "iPod9,1",
+      "minRuntimeVersionString": "12.3.1",
+      "minRuntimeVersion": 787201,
+      "name": "iPod touch (7th generation)"
+    }
+  ],
+  "runtimes": [
+    {
+      "isAvailable": false,
+      "version": "15.0",
+      "isInternal": false,
+      "buildversion": "19A339",
+      "supportedArchitectures": [
+        "x86_64",
+        "arm64"
+      ],
+      "supportedDeviceTypes": [
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype",
+          "name": "iPhone 13 Pro",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro",
+          "productFamily": "iPhone"
+        },
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype",
+          "name": "iPad mini (6th generation)",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation",
+          "productFamily": "iPad"
+        },
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPod touch (7th generation).simdevicetype",
+          "name": "iPod touch (7th generation)",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.iPod-touch--7th-generation-",
+          "productFamily": "iPhone"
+        }
+      ],
+      "availabilityError": "The iOS 15.0 simulator runtime is not supported on hosts after macOS 14.99.0.",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-15-0",
+      "platform": "iOS",
+      "bundlePath": "/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 15.0.simruntime",
+      "runtimeRoot": "/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 15.0.simruntime/Contents/Resources/RuntimeRoot",
+      "lastUsage": {
+        "arm64": "0001-01-01T00:00:00Z",
+        "x86_64": "0001-01-01T00:00:00Z"
+      },
+      "name": "iOS 15.0"
+    },
+    {
+      "isAvailable": true,
+      "version": "26.2",
+      "isInternal": false,
+      "buildversion": "23C54",
+      "supportedArchitectures": [
+        "arm64"
+      ],
+      "supportedDeviceTypes": [
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype",
+          "name": "iPhone 17 Pro",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+          "productFamily": "iPhone"
+        },
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+          "name": "iPad Pro 13-inch (M5) (16GB)",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+          "productFamily": "iPad"
+        }
+      ],
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-26-2",
+      "platform": "iOS",
+      "bundlePath": "/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime",
+      "runtimeRoot": "/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot",
+      "lastUsage": {
+        "arm64": "2026-03-30T13:13:29Z"
+      },
+      "name": "iOS 26.2"
+    },
+    {
+      "isAvailable": true,
+      "version": "26.2",
+      "isInternal": false,
+      "buildversion": "23K51",
+      "supportedArchitectures": [
+        "arm64"
+      ],
+      "supportedDeviceTypes": [
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/Apple TV 4K (3rd generation).simdevicetype",
+          "name": "Apple TV 4K (3rd generation)",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-TV-4K-3rd-generation-4K",
+          "productFamily": "Apple TV"
+        }
+      ],
+      "identifier": "com.apple.CoreSimulator.SimRuntime.tvOS-26-2",
+      "platform": "tvOS",
+      "bundlePath": "/Library/Developer/CoreSimulator/Volumes/tvOS_23K51/Library/Developer/CoreSimulator/Profiles/Runtimes/tvOS 26.2.simruntime",
+      "runtimeRoot": "/Library/Developer/CoreSimulator/Volumes/tvOS_23K51/Library/Developer/CoreSimulator/Profiles/Runtimes/tvOS 26.2.simruntime/Contents/Resources/RuntimeRoot",
+      "lastUsage": {
+        "arm64": "2026-01-28T04:47:47Z"
+      },
+      "name": "tvOS 26.2"
+    },
+    {
+      "isAvailable": true,
+      "version": "26.2",
+      "isInternal": false,
+      "buildversion": "23S303",
+      "supportedArchitectures": [
+        "arm64"
+      ],
+      "supportedDeviceTypes": [
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/Apple Watch Series 11 (46mm).simdevicetype",
+          "name": "Apple Watch Series 11 (46mm)",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-Series-11-46mm",
+          "productFamily": "Apple Watch"
+        }
+      ],
+      "identifier": "com.apple.CoreSimulator.SimRuntime.watchOS-26-2",
+      "platform": "watchOS",
+      "bundlePath": "/Library/Developer/CoreSimulator/Volumes/watchOS_23S303/Library/Developer/CoreSimulator/Profiles/Runtimes/watchOS 26.2.simruntime",
+      "runtimeRoot": "/Library/Developer/CoreSimulator/Volumes/watchOS_23S303/Library/Developer/CoreSimulator/Profiles/Runtimes/watchOS 26.2.simruntime/Contents/Resources/RuntimeRoot",
+      "lastUsage": {
+        "arm64": "0001-01-01T00:00:00Z"
+      },
+      "name": "watchOS 26.2"
+    },
+    {
+      "isAvailable": true,
+      "version": "26.2",
+      "isInternal": false,
+      "buildversion": "23N301",
+      "supportedArchitectures": [
+        "arm64"
+      ],
+      "supportedDeviceTypes": [
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/Apple Vision Pro.simdevicetype",
+          "name": "Apple Vision Pro",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Vision-Pro-4K",
+          "productFamily": "Apple Vision"
+        }
+      ],
+      "identifier": "com.apple.CoreSimulator.SimRuntime.xrOS-26-2",
+      "platform": "xrOS",
+      "bundlePath": "/Library/Developer/CoreSimulator/Volumes/xrOS_23N301/Library/Developer/CoreSimulator/Profiles/Runtimes/xrOS 26.2.simruntime",
+      "runtimeRoot": "/Library/Developer/CoreSimulator/Volumes/xrOS_23N301/Library/Developer/CoreSimulator/Profiles/Runtimes/xrOS 26.2.simruntime/Contents/Resources/RuntimeRoot",
+      "lastUsage": {
+        "arm64": "2026-02-25T23:24:32Z"
+      },
+      "name": "visionOS 26.2"
+    }
+  ],
+  "devices": {
+    "com.apple.CoreSimulator.SimRuntime.tvOS-26-2": [
+      {
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/7B29E71B-2372-401E-AEFF-7139523E8E94\/data",
+        "dataPathSize": 4096,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/7B29E71B-2372-401E-AEFF-7139523E8E94",
+        "udid": "7B29E71B-2372-401E-AEFF-7139523E8E94",
+        "isAvailable": true,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.Apple-TV-4K-3rd-generation-4K",
+        "state": "Shutdown",
+        "name": "Apple TV 4K (3rd generation)"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.iOS-26-2": [
+      {
+        "lastBootedAt": "2026-03-30T13:02:40Z",
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/D7E10805-F358-460A-BF13-22216EDAFA61\/data",
+        "dataPathSize": 2506272768,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/D7E10805-F358-460A-BF13-22216EDAFA61",
+        "udid": "D7E10805-F358-460A-BF13-22216EDAFA61",
+        "isAvailable": true,
+        "logPathSize": 598016,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+        "state": "Shutdown",
+        "name": "iPhone 17 Pro"
+      },
+      {
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/AD9B32CA-B923-4B14-9CC8-C4889B6CEC47\/data",
+        "dataPathSize": 18337792,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/AD9B32CA-B923-4B14-9CC8-C4889B6CEC47",
+        "udid": "AD9B32CA-B923-4B14-9CC8-C4889B6CEC47",
+        "isAvailable": true,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB",
+        "state": "Shutdown",
+        "name": "iPad Pro 13-inch (M5)"
+      },
+      {
+        "availabilityError": "device type not supported by runtime",
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/E1CC0F67-9B05-4E52-BB9F-735B6369AD6A\/data",
+        "dataPathSize": 18337792,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/E1CC0F67-9B05-4E52-BB9F-735B6369AD6A",
+        "udid": "E1CC0F67-9B05-4E52-BB9F-735B6369AD6A",
+        "isAvailable": false,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPod-touch--7th-generation-",
+        "state": "Shutdown",
+        "name": "iPod touch (7th generation)"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.iOS-18-6": [
+      {
+        "availabilityError": "runtime profile not found using \"System\" match policy",
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/E1AF2CE4-9D52-4CF7-B353-375529AC5D80\/data",
+        "dataPathSize": 18337792,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/E1AF2CE4-9D52-4CF7-B353-375529AC5D80",
+        "udid": "E1AF2CE4-9D52-4CF7-B353-375529AC5D80",
+        "isAvailable": false,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro",
+        "state": "Shutdown",
+        "name": "iPhone 16 Pro"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.watchOS-11-2": [],
+    "com.apple.CoreSimulator.SimRuntime.xrOS-26-0": [
+      {
+        "lastBootedAt": "2025-10-15T18:36:29Z",
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/605F355D-DEFF-4448-9DD3-70DC6A4A867C\/data",
+        "dataPathSize": 1811664896,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/605F355D-DEFF-4448-9DD3-70DC6A4A867C",
+        "udid": "605F355D-DEFF-4448-9DD3-70DC6A4A867C",
+        "isAvailable": false,
+        "availabilityError": "runtime profile not found using \"System\" match policy",
+        "logPathSize": 77824,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Vision-Pro-4K",
+        "state": "Shutdown",
+        "name": "Apple Vision Pro"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.xrOS-2-3": [
+      {
+        "lastBootedAt": "2025-03-18T00:27:52Z",
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/A387C46F-B480-468E-B774-BDF1F2F184DF\/data",
+        "dataPathSize": 1849180160,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/A387C46F-B480-468E-B774-BDF1F2F184DF",
+        "udid": "A387C46F-B480-468E-B774-BDF1F2F184DF",
+        "isAvailable": false,
+        "availabilityError": "runtime profile not found using \"System\" match policy",
+        "logPathSize": 462848,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Vision-Pro-4K",
+        "state": "Shutdown",
+        "name": "Apple Vision Pro"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.watchOS-26-2": [
+      {
+        "dataPath": "\/Users\/madsmtm\/Library\/Developer\/CoreSimulator\/Devices\/6FA2E193-8B43-43E4-913D-F4A4E068D5B3\/data",
+        "dataPathSize": 4096,
+        "logPath": "\/Users\/madsmtm\/Library\/Logs\/CoreSimulator\/6FA2E193-8B43-43E4-913D-F4A4E068D5B3",
+        "udid": "6FA2E193-8B43-43E4-913D-F4A4E068D5B3",
+        "isAvailable": true,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-Series-11-46mm",
+        "state": "Shutdown",
+        "name": "Apple Watch Series 11 (46mm)"
+      }
+    ]
+  },
+  "pairs": {
+    "27B1DEE2-9403-492C-ADB5-2D4045C47F72": {
+      "watch": {
+        "name": "Apple Watch Series 5 (40mm)",
+        "udid": "256EA255-CF59-48E4-97D7-B053EDBA417E",
+        "state": "Shutdown"
+      },
+      "phone": {
+        "name": "iPhone (iOS 18.2)",
+        "udid": "8C2506D5-4BAB-42A3-BFFF-57145C35BADD",
+        "state": "Shutdown"
+      },
+      "state": "(unavailable)"
+    }
+  }
+}

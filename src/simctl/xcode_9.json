@@ -1,0 +1,169 @@
+{
+  "devicetypes": [
+    {
+      "name": "iPhone 4s",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-4s"
+    },
+    {
+      "name": "iPad 2",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-2"
+    },
+    {
+      "name": "Apple TV 1080p",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-TV-1080p"
+    },
+    {
+      "name": "Apple Watch - 38mm",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-38mm"
+    },
+    {
+      "name": "Apple Watch - 42mm",
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.Apple-Watch-42mm"
+    }
+  ],
+  "runtimes": [
+    {
+      "buildversion": "12B411",
+      "availability": "(available)",
+      "name": "iOS 8.1",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-8-1",
+      "version": "8.1"
+    },
+    {
+      "buildversion": "15C107",
+      "availability": "(available)",
+      "name": "iOS 11.2",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-11-2",
+      "version": "11.2"
+    },
+    {
+      "buildversion": "15K104",
+      "availability": "(available)",
+      "name": "tvOS 11.2",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.tvOS-11-2",
+      "version": "11.2"
+    },
+    {
+      "buildversion": "15S100",
+      "availability": "(available)",
+      "name": "watchOS 4.2",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.watchOS-4-2",
+      "version": "4.2"
+    }
+  ],
+  "devices": {
+    "com.apple.CoreSimulator.SimRuntime.tvOS-11-2": [
+      {
+        "state": "Shutdown",
+        "availability": " (unavailable, runtime profile not found)",
+        "name": "Apple TV",
+        "udid": "9737B18F-75C3-4A6D-BB81-99B7DB5502E5"
+      },
+      {
+        "state": "Shutdown",
+        "availability": " (unavailable, runtime profile not found)",
+        "name": "Apple TV 4K (at 1080p)",
+        "udid": "1CCFB83A-623B-4779-95A5-75C7B13F7486"
+      },
+      {
+        "state": "Shutdown",
+        "availability": " (unavailable, runtime profile not found)",
+        "name": "Apple TV 4K",
+        "udid": "1D0DD2AF-0D9D-432D-B85B-6D8931A1AAD8"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.watchOS-4-2": [
+      {
+        "state": "Shutdown",
+        "availability": " (unavailable, runtime profile not found)",
+        "name": "Apple Watch - 38mm",
+        "udid": "DDD9BDA1-1831-4263-A775-4218F3D829B5"
+      },
+      {
+        "state": "Shutdown",
+        "availability": " (unavailable, runtime profile not found)",
+        "name": "Apple Watch - 42mm",
+        "udid": "E4DC8555-D804-44F4-9CD7-46C42D1FD9D5"
+      }
+    ],
+    "watchOS 2.2": [
+      {
+        "state": "Shutdown",
+        "availability": "(available)",
+        "name": "Apple Watch - 38mm",
+        "udid": "8D790E29-2A96-49AA-8E2C-613AE8D58F39"
+      },
+      {
+        "state": "Shutdown",
+        "availability": "(available)",
+        "name": "Apple Watch - 42mm",
+        "udid": "61AFDB8B-81D1-4FE3-AF6B-64243D54FC84"
+      }
+    ],
+    "tvOS 9.2": [
+      {
+        "state": "Shutdown",
+        "availability": "(available)",
+        "name": "Apple TV 1080p",
+        "udid": "D0C1FC49-5C85-4998-8F48-837FC7ED55E7"
+      }
+    ],
+    "com.apple.CoreSimulator.SimRuntime.iOS-11-2": [],
+    "iOS 8.1": [
+      {
+        "state": "Shutdown",
+        "availability": "(available)",
+        "name": "iPhone 4s",
+        "udid": "E46B2A36-A14F-43AA-91F6-BCB498BEAA75"
+      },
+      {
+        "state": "Shutdown",
+        "availability": "(available)",
+        "name": "iPhone 5",
+        "udid": "E2ECE971-43CA-4832-9C84-E976F609932C"
+      }
+    ],
+    "iOS 9.3": [
+      {
+        "state": "Shutdown",
+        "availability": "(available)",
+        "name": "iPhone 4s",
+        "udid": "18430486-613E-494F-99B8-D76502AA888A"
+      },
+      {
+        "state": "Shutdown",
+        "availability": "(available)",
+        "name": "iPhone 5",
+        "udid": "4FFDF766-B08C-4437-88A2-8E00BC046356"
+      }
+    ]
+  },
+  "pairs": {
+    "29AACCC3-94CA-4872-9912-6A223B3DA2BE": {
+      "watch": {
+        "name": "Apple Watch - 42mm",
+        "udid": "61AFDB8B-81D1-4FE3-AF6B-64243D54FC84",
+        "state": "Shutdown"
+      },
+      "phone": {
+        "name": "iPhone 4s",
+        "udid": "18430486-613E-494F-99B8-D76502AA888A",
+        "state": "Shutdown"
+      },
+      "state": "(unavailable)"
+    },
+    "8373EE24-9A5C-4319-B4BD-785F128D0E9B": {
+      "watch": {
+        "name": "Apple Watch - 38mm",
+        "udid": "8D790E29-2A96-49AA-8E2C-613AE8D58F39",
+        "state": "Shutdown"
+      },
+      "phone": {
+        "name": "iPhone 5",
+        "udid": "E2ECE971-43CA-4832-9C84-E976F609932C",
+        "state": "Shutdown"
+      },
+      "state": "(active, disconnected)"
+    }
+  }
+}
