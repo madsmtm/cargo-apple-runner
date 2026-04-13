@@ -5,7 +5,7 @@
 [![Documentation](https://docs.rs/cargo-apple-runner/badge.svg)](https://docs.rs/cargo-apple-runner/)
 [![CI](https://github.com/madsmtm/cargo-apple-runner/actions/workflows/ci.yml/badge.svg)](https://github.com/madsmtm/cargo-apple-runner/actions/workflows/ci.yml)
 
-Easily bundle, sign and launch binaries on Apple targets.
+Easily bundle, sign and launch binaries on Apple targets, including on simulator and on device.
 
 
 ## Usage
@@ -30,12 +30,50 @@ cargo run --target aarch64-apple-ios-sim
 ```
 
 
+## Supported platforms
+
+Host: macOS 10.12, [same as `rustc`](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html#os-version).
+Target: macOS, Mac Catalyst, iOS, tvOS, watchOS and visionOS.
+Simulators: Requires Xcode 9.2 and above.
+Devices: Yet unsupported, will use `devicectl` and fall back to `ios-deploy` on older Xcode.
+
+
 ## Bundling
 
-`cargo-apple-runner` will inspect your binary, and determine if it needs to bundle it based on a few factors:
-- TODO.
+`cargo-apple-runner` will inspect your binary, and guess whether it needs to bundle it based on a few factors:
+- TODO. Maybe linking AppKit / UIKit? Maybe something else?
 
 
+## Custom `Info.plist`
+
+Most real-world applications will want to modify the data in the application's `Info.plist`, you can use the [`embed_plist`](https://docs.rs/embed_plist/) crate to do so:
+
+```rust,ignore
+embed_plist::embed_plist!("Info.plist");
+```
+
+If this is not done, `cargo-apple-runner` will generate a reasonable `Info.plist` for you.
+
+
+## Custom entitlements
+
+In some cases, you might need to request different entitlements for your application.
+
+You can use the [`embed_entitlements`](https://docs.rs/embed_entitlements/) crate to do so:
+
+```rust,ignore
+embed_entitlements::embed_entitlements!("my_app.entitlements");
+```
+
+Note that when building for a real (non-simulator) device, you will need to configure a provisioning profile with those entitlements allowed. On macOS, certain entitlements are allowed by default, see [this tech note](https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles#Entitlements-on-macOS).
+
+As a small optimization when using entitlements, you can consider adding the following to `.cargo/config.toml` to reduce link-time (since signing will be done by the runner):
+
+```toml
+[target.'cfg(all(target_vendor = "apple", not(target_env = "sim")))']
+# Signing is done by `cargo-apple-runner`.
+rustflags = ["-Clink-arg=-Wl,-no_adhoc_codesign"]
+```
 
 
 ## Usage in CI
@@ -91,25 +129,27 @@ jobs:
 ```
 
 
-## What do I want?
+## Why?
 
-```toml
-[target.'cfg(target_vendor = "apple")']
-runner = "cargo-apple-runner"
-# Optional optimization when using entitlements, there signing is done by the runner.
-rustflags = ["-Clink-arg=-Wl,-no_adhoc_codesign"]
-
-# TODO: Running on device requires doing the steps in
-# https://github.com/sonos/dinghy/blob/main/docs/ios.md#additional-requirements
-```
+The user-experience of `cargo run --target aarch64-apple-ios-sim` when working in multi-.
 
 
-## Supported platforms
+## Design choices
 
-Host: macOS 10.12, [same as `rustc`](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html#os-version).
-OS: macOS, Mac Catalyst, iOS, tvOS, watchOS and visionOS.
-Simulators: Xcode 9.2 and above.
-Devices: Yet unsupported.
+Don't parse any `.toml` files; everything is embedded in the binary instead. This makes it much easier to support test binaries.
+
+Don't automatically create and boot simulator devices: we'll have a hard time doing this correctly when running under `cargo test` (we'd need to do a bit of IPC between `cargo-apple-runner` processes), and it's unclear what we should do afterwards (should we shut down the device if we booted it?)
+
+
+## Limitations
+
+Only supports bundled assets; reading from other directories may fail (we don't copy the entire workspace to the device).
+
+Environment variables.
+
+Use `SIMCTL_CHILD_*` to pass env vars to simctl instances.
+
+This is a development tool only; when deploying on real devices, consider using something else. I can recommend [`cargo-xcode`](https://lib.rs/crates/cargo-xcode), this gives the most control and helps with the complex process of notarizing and submitting to the app store.
 
 
 ## Env vars
@@ -184,43 +224,8 @@ Will probably need a `cargo-ios` subcommand for that.
 `subsecond` todo
 
 
-## Credits
-
-https://simlay.net/posts/rust-target-runner-for-ios/
-cargo-dinghy
 
 
-
-
-
-
-
-## Why
-
-The user-experience of `cargo run --target aarch64-apple-ios-sim`.
-
-This is a development tool only; when deploying on real devices, use something else (such as `cargo-xcode`).
-
-- Current options are too generic, `cargo-mobile2`, `cargo-dinghy` and `crossbow` all , which makes them harder to debug and understand.
-- None of the current options make it easy to use Cargo target runners.
-- Correctness.
-- Support more Apple platforms (such as tvOS, watchOS and visionOS).
-
-
-## Design choices
-
-Don't parse any `.toml` files; everything is embedded in the binary instead. This makes it much easier to support test binaries.
-
-Don't automatically create and boot simulator devices: we'll have a hard time doing this correctly when running under `cargo test` (we'd need to do a bit of IPC between `cargo-apple-runner` processes), and it's unclear what we should do afterwards (should we shut down the device if we booted it?)
-
-
-## Limitations
-
-Only supports bundled assets; reading from other directories may fail (we don't copy the entire workspace to the device).
-
-Environment variables.
-
-Use `SIMCTL_CHILD_*` to pass env vars to simctl instances.
 
 
 ## Planned
@@ -277,3 +282,13 @@ at your option.
 [MIT]: ./LICENSE-MIT.txt
 [Zlib]: ./LICENSE-ZLIB.txt
 [Apache-2.0]: ./LICENSE-APACHE.txt
+
+
+## Credits
+
+- Original idea for this by [@simlay](https://github.com/simlay): https://simlay.net/posts/rust-target-runner-for-ios/
+- [cargo-bundle](https://github.com/burtonageo/cargo-bundle)
+- [cargo-dinghy](https://github.com/sonos/dinghy)
+- [cargo-mobile2](https://github.com/tauri-apps/cargo-mobile2)
+- [tauri-bundler](https://crates.io/crates/tauri-bundler)
+- [apple-platform-rs](https://github.com/indygreg/apple-platform-rs)
