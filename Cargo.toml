@@ -45,5 +45,11 @@ objc2-security = { version = "0.3.2", default-features = false, features = [
     "SecTask",
 ] }
 
+[target.'cfg(target_os = "macos")'.dev-dependencies]
+objc2-app-kit = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "NSRunningApplication",
+] }
+
 [package.metadata.typos]
 default.extend-words.udid = "udid"
