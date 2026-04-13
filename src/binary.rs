@@ -19,7 +19,7 @@ pub struct Binary {
     pub name: Option<Vec<u8>>,
     /// Usually there's only one here, but we expect to see two of these in a
     /// zippered binary (a binary that supports both macOS and Mac Catalyst).
-    pub versions: Vec<BuildVersion>,
+    versions: Vec<BuildVersion>,
     /// Embedded `__TEXT,__info_plist` contents, if any.
     ///
     /// See the `embed_plist` crate for how to insert this.
@@ -30,6 +30,13 @@ pub struct Binary {
     pub entitlements_data: Option<Vec<u8>>,
     /// Whether the binary is already (likely ad-hoc) signed.
     pub signed: bool,
+    /// Whether the application should be launched instead of simply spawned.
+    ///
+    /// This is set if:
+    /// - The binary links AppKit, UIKit, WatchKit or similar UI frameworks.
+    /// - TODO: Others? Maybe if linking `UIApplicationMain` or `NSApp`? Or
+    ///   maybe there's further libraries that expect this?
+    pub gui_like: bool,
     // TODO: Support manganis __ASSET__?
     // Potentially also special assets like:
     // - asset catalogs (`actool --version --output-format xml1`)
@@ -69,9 +76,11 @@ impl Binary {
         };
 
         debug!("vtool -show-build {path:?}");
+        debug!("dyld_info -linked_dylibs {path:?} | grep -E 'AppKit|UIKit'");
         let mut versions = Vec::new();
         let mut signed = false;
         let mut name = None;
+        let mut gui_like = false;
         for cmd in load_commands.context("failed reading load command")? {
             let cmd = cmd.context("failed reading load command")?;
             if let Ok(variant) = cmd.variant() {
@@ -79,8 +88,29 @@ impl Binary {
                     versions.push(v);
                 }
                 if let LoadCommandVariant::IdDylib(dylib_cmd) = variant {
-                    let s = cmd.string(endianness, dylib_cmd.dylib.name);
-                    name = Some(s.context("failed reading LC_ID_DYLIB")?.to_vec());
+                    let s = cmd
+                        .string(endianness, dylib_cmd.dylib.name)
+                        .context("failed reading LC_ID_DYLIB")?;
+                    name = Some(s.to_vec());
+                }
+                if let LoadCommandVariant::Dylib(dylib_cmd) = variant {
+                    let s = cmd
+                        .string(endianness, dylib_cmd.dylib.name)
+                        .context("failed reading dylib")?;
+                    // These are all used for GUI development, and usually
+                    // need the application to be launched to work.
+                    //
+                    // (AppKit is perhaps an outlier here, it might not
+                    // require launching? Yet unsure.)
+                    if contains(s, b"AppKit")
+                        || contains(s, b"Cocoa") // Re-exports AppKit
+                        || contains(s, b"UIKit")
+                        || contains(s, b"WatchKit")
+                        || contains(s, b"SwiftUI")
+                        || contains(s, b"WatchKit")
+                    {
+                        gui_like = true;
+                    }
                 }
             }
             if cmd.cmd() == macho::LC_CODE_SIGNATURE {
@@ -132,6 +162,7 @@ impl Binary {
             info_plist_data,
             entitlements_data,
             signed,
+            gui_like,
         })
     }
 
@@ -246,4 +277,8 @@ impl Platform {
                 | Self::VISIONOSSIMULATOR
         )
     }
+}
+
+fn contains(haystack: &[u8], needle: &[u8]) -> bool {
+    haystack.windows(needle.len()).any(|w| w == needle)
 }

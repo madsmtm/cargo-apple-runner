@@ -22,8 +22,10 @@ use std::{
     cmp::Ordering,
     collections::HashMap,
     ffi::{OsStr, OsString},
+    fs,
+    os::unix::process::ExitStatusExt,
     path::{Path, PathBuf},
-    process::{Command, ExitCode, ExitStatus},
+    process::{Command, ExitStatus},
     str::FromStr,
 };
 
@@ -33,12 +35,6 @@ use serde::{Deserialize, Deserializer, de::Error as _};
 use tracing::{error, trace};
 
 use crate::{Binary, OSVersion, Platform, util};
-
-/// `true` if the binary should be installed and launched, `false` if it can,
-/// as an optimization, be spawned instead.
-pub fn should_launch(binary: &Binary) -> bool {
-    false // TODO
-}
 
 /// Get the temporary directory of the device.
 ///
@@ -242,7 +238,9 @@ pub fn spawn<A: AsRef<OsStr>>(
     cmd.arg(udid);
     cmd.arg(exe_path);
     cmd.args(args);
-    cmd.envs(env_vars(&temp_dir));
+    cmd.envs(forwarded_env_vars());
+    // Set `CARGO_TARGET_TMPDIR` to `TMPDIR`. See also <https://github.com/rust-lang/cargo/issues/16427>.
+    cmd.env("SIMCTL_CHILD_CARGO_TARGET_TMPDIR", temp_dir);
 
     let status = cmd
         .status()
@@ -251,11 +249,48 @@ pub fn spawn<A: AsRef<OsStr>>(
     Ok(status)
 }
 
-pub fn install_and_launch(device: &str) -> Result<ExitCode> {
-    // Serialize launching applications.
+pub fn install_and_launch<A: AsRef<OsStr>>(
+    udid: &str,
+    bundle_path: &Path,
+    bundle_identifier: &str,
+    args: impl Iterator<Item = A>,
+) -> Result<ExitStatus> {
+    let temp_dir = get_temp_dir(udid)?;
 
-    // fs::File::create("foo.txt")?;
-    Ok(ExitCode::SUCCESS)
+    // Only a single application can be launched at a time, so we add a shared
+    // lock on the device (in the temporary directory, so no need to clean up
+    // the file afterwards), and synchronize with other `cargo-apple-runner`
+    // processes to wait launching until the other runners are done.
+    //
+    // This makes test executors like `cargo nextest` that spawn multiple
+    // processes at the same time work.
+    let lock_file = fs::File::create(temp_dir.join("cargo-apple-runner.lock"))
+        .context("failed creating lock file in simulator")?;
+    lock_file.lock()?;
+
+    // Install the application.
+    // TODO: Ensure that what's being installed is unique / won't conflict
+    // with other processes, and move it above the lock somehow?
+    let mut cmd = Command::new("xcrun");
+    cmd.arg("simctl");
+    cmd.arg("install");
+    cmd.arg(udid);
+    cmd.arg(bundle_path);
+
+    // Launch the application.
+    let mut cmd = Command::new("xcrun");
+    cmd.arg("simctl");
+    cmd.arg("launch");
+    cmd.arg("--console");
+    cmd.arg(udid);
+    cmd.arg(bundle_identifier);
+    cmd.args(args);
+    cmd.envs(forwarded_env_vars());
+    // Set `CARGO_TARGET_TMPDIR` to `TMPDIR`. See also <https://github.com/rust-lang/cargo/issues/16427>.
+    cmd.env("SIMCTL_CHILD_CARGO_TARGET_TMPDIR", temp_dir);
+
+    lock_file.unlock()?;
+    Ok(ExitStatus::from_raw(0))
 }
 
 /// Environment variables to set for `xcrun` invocations.
@@ -264,36 +299,25 @@ pub fn install_and_launch(device: &str) -> Result<ExitCode> {
 /// - All `CARGO_PKG_*` env vars.
 /// - The `CARGO_CRATE_NAME`, `CARGO_BIN_NAME` and `CARGO_PRIMARY_PACKAGE` env
 ///   vars.
-/// - Sets `CARGO_TARGET_TMPDIR` to `TMPDIR`. See also:
-///   <https://github.com/rust-lang/cargo/issues/16427>
 ///
-/// We deliberately don't copy `CARGO_MANIFEST_DIR`, as that won't work
-/// reliably if the code is located in a protected directory such as
-/// `~/Documents` or `~/Desktop`:
-/// <https://support.apple.com/en-US/guide/security/secddd1d86a6/web>
+/// We deliberately don't copy CWD-relative vars like `CARGO_MANIFEST_DIR`, as
+/// that won't work reliably if the code is located in a protected directory
+/// such as `~/Documents` or `~/Desktop`:
+/// <https://support.apple.com/en-US/guide/security/secddd1d86a6/web>.
 ///
 /// TODO: Somehow discourage `Path::new(env!("CARGO_MANIFEST_DIR"))` too?
-fn env_vars(temp_dir: &Path) -> impl IntoIterator<Item = (OsString, OsString)> {
+fn forwarded_env_vars() -> impl IntoIterator<Item = (OsString, OsString)> {
     std::env::vars_os()
-        .filter_map(|(key, value)| {
-            let Some(keystr) = key.to_str() else {
-                return None;
+        .filter(|(key, _)| {
+            let Some(key) = key.to_str() else {
+                return false;
             };
 
-            if keystr.starts_with("CARGO_PKG_") {
-                return Some((key, value));
-            }
-            if keystr == "CARGO_CRATE_NAME"
-                || keystr == "CARGO_BIN_NAME"
-                || keystr == "CARGO_PRIMARY_PACKAGE"
-            {
-                return Some((key, value));
-            }
-            if keystr == "CARGO_TARGET_TMPDIR" {
-                return Some((key, temp_dir.into()));
-            }
-
-            None
+            key.starts_with("CARGO_PKG_")
+                || matches!(
+                    key,
+                    "CARGO_CRATE_NAME" | "CARGO_BIN_NAME" | "CARGO_PRIMARY_PACKAGE"
+                )
         })
         .map(|(key, value)| {
             let mut new_key = OsString::from("SIMCTL_CHILD_");

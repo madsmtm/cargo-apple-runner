@@ -439,9 +439,9 @@ dependencies = [
  "objc2-core-foundation",
  "objc2-security",
  "object 0.39.0",
+ "plist",
  "serde",
  "serde_json",
- "tempfile",
  "tracing",
  "tracing-subscriber",
 ]

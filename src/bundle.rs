@@ -18,9 +18,12 @@ pub(crate) fn should_bundle(binary: &Binary) -> bool {
     false
 }
 
-pub fn write_bundle(binary: &Binary, cargo_env: &CargoEnv) -> Result<(PathBuf, PathBuf)> {
+pub fn write_bundle(
+    binary: &Binary,
+    cargo_env: &CargoEnv,
+) -> Result<(PathBuf, PathBuf, Option<String>)> {
     if !should_bundle(binary) {
-        return Ok((binary.path.to_path_buf(), binary.path.to_path_buf()));
+        return Ok((binary.path.to_path_buf(), binary.path.to_path_buf(), None));
     }
 
     let bundle_path = binary.path.with_added_extension("app");
@@ -67,7 +70,14 @@ pub fn write_bundle(binary: &Binary, cargo_env: &CargoEnv) -> Result<(PathBuf, P
         bundle_path.join("Info.plist")
     };
     debug!("createInfoPlist {info_plist_path:?}");
-    fs::write(info_plist_path, info_plist).context("failed writing Info.plist")?;
+    fs::write(info_plist_path, &info_plist).context("failed writing Info.plist")?;
+    let plist: plist::Value = plist::from_bytes(&info_plist).context("invalid Info.plist")?;
+    let bundle_identifier = plist
+        .as_dictionary()
+        .context("invalid")?
+        .get("CFBundleIdentifier")
+        .and_then(|v| v.as_string())
+        .map(|s| s.to_string());
 
     // TODO: Write assets etc. from Manganis
 
@@ -88,7 +98,7 @@ pub fn write_bundle(binary: &Binary, cargo_env: &CargoEnv) -> Result<(PathBuf, P
         }
     }
 
-    Ok((bundle_path, exe_path))
+    Ok((bundle_path, exe_path, bundle_identifier))
 }
 
 fn default_info_plist(binary: &Binary, cargo_env: &CargoEnv) -> String {

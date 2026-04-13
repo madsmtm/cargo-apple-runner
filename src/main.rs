@@ -40,7 +40,7 @@ fn run() -> Result<ExitCode> {
     let binary =
         Binary::parse(&executable).with_context(|| format!("failed parsing {executable:?}"))?;
 
-    let (bundle_path, exe_path) = bundle::write_bundle(&binary, &cargo_env)
+    let (bundle_path, exe_path, bundle_identifier) = bundle::write_bundle(&binary, &cargo_env)
         .with_context(|| format!("failed writing bundle {executable:?}"))?;
 
     let entitlements = if binary.platform().is_simulator() {
@@ -77,6 +77,8 @@ fn run() -> Result<ExitCode> {
     // TODO: Support "Designed for iPad" run mode somehow?
     match binary.platform() {
         Platform::MACOS | Platform::MACCATALYST => {
+            // TODO: lsregister & touch stuff
+
             let status = std::process::Command::new(&exe_path)
                 .args(args)
                 .status()
@@ -89,7 +91,12 @@ fn run() -> Result<ExitCode> {
         | Platform::VISIONOSSIMULATOR => {
             let (runtime, device) = simctl::get_device(&binary)?;
             dbg!(&runtime, &device);
-            let status = simctl::spawn(&device.udid, &bundle_path, &exe_path, args)?;
+            let status = if binary.gui_like {
+                let bundle_identifier = bundle_identifier.context("must have bundle identifier")?;
+                simctl::install_and_launch(&device.udid, &bundle_path, &bundle_identifier, args)?
+            } else {
+                simctl::spawn(&device.udid, &bundle_path, &exe_path, args)?
+            };
             Ok(util::status_to_code(status))
         }
         Platform::IOS | Platform::TVOS | Platform::WATCHOS | Platform::VISIONOS => {

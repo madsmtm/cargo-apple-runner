@@ -15,14 +15,13 @@ repository = "https://github.com/madsmtm/cargo-apple-runner"
 license = "Zlib OR Apache-2.0 OR MIT"
 
 [dependencies]
-embed_plist = "1.0"
 object = "0.39.0"
 anyhow = "1.0.102"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 serde_json = "1.0.149"
 serde = { version = "1.0.228", features = ["derive"] }
-tempfile = "3.27.0"
+plist = "1.8.0"
 
 [dev-dependencies]
 embed_plist = "1.2.2"
