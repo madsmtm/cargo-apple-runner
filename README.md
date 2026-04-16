@@ -5,12 +5,13 @@
 [![Documentation](https://docs.rs/cargo-apple-runner/badge.svg)](https://docs.rs/cargo-apple-runner/)
 [![CI](https://github.com/madsmtm/cargo-apple-runner/actions/workflows/ci.yml/badge.svg)](https://github.com/madsmtm/cargo-apple-runner/actions/workflows/ci.yml)
 
-Easily bundle, sign and launch binaries on Apple targets, including on simulator and on device.
+Easily bundle, sign and launch binaries on Apple targets, including on the simulator and on real devices.
 
 
 ## Usage
 
 Install with:
+
 ```sh
 cargo install cargo-apple-runner
 ```
@@ -22,29 +23,37 @@ And add the following to your project's `.cargo/config.toml`:
 runner = "cargo-apple-runner"
 ```
 
-Now you can test and run your programs on the simulator with:
+Now you can test and run your (GUI) applications on the iOS simulator with:
+
 ```sh
 cargo test --target aarch64-apple-ios-sim --target aarch64-apple-visionos-sim
 cargo run --target aarch64-apple-ios-sim
 # etc.
 ```
 
+Or on Mac Catalyst with:
 
-## Supported platforms
+```sh
+cargo run --example my_example --target aarch64-apple-ios-macabi
+```
 
-Host: macOS 10.12, [same as `rustc`](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html#os-version).
-Target: macOS, Mac Catalyst, iOS, tvOS, watchOS and visionOS.
-Simulators: Requires Xcode 9.2 and above.
+
+## Supported platforms and requirements
+
+Host: Requires at least macOS 10.12, [same as `rustc`](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html#os-version).
+Targets: macOS, Mac Catalyst, iOS, tvOS, watchOS and visionOS.
+Simulators: Uses `xcrun simctl`, only tested on Xcode 9.2 and above.
 Devices: Yet unsupported, will use `devicectl` and fall back to `ios-deploy` on older Xcode.
 
 
 ## Bundling
 
 `cargo-apple-runner` will inspect your binary, and guess whether it needs to bundle it based on a few factors:
-- TODO. Maybe linking AppKit / UIKit? Maybe something else?
+- Whether your binary links AppKit, UIKit, WatchKit and similar system GUI frameworks.
+- TODO: Maybe something more?
 
 
-## Custom `Info.plist`
+### Custom `Info.plist`
 
 Most real-world applications will want to modify the data in the application's `Info.plist`, you can use the [`embed_plist`](https://docs.rs/embed_plist/) crate to do so:
 
@@ -55,7 +64,12 @@ embed_plist::embed_plist!("Info.plist");
 If this is not done, `cargo-apple-runner` will generate a reasonable `Info.plist` for you.
 
 
-## Custom entitlements
+## Signing
+
+TODO.
+
+
+### Custom entitlements
 
 In some cases, you might need to request different entitlements for your application.
 
@@ -74,6 +88,11 @@ As a small optimization when using entitlements, you can consider adding the fol
 # Signing is done by `cargo-apple-runner`.
 rustflags = ["-Clink-arg=-Wl,-no_adhoc_codesign"]
 ```
+
+
+## Launching
+
+TODO.
 
 
 ## Usage in CI
@@ -149,7 +168,7 @@ Environment variables.
 
 Use `SIMCTL_CHILD_*` to pass env vars to simctl instances.
 
-This is a development tool only; when deploying on real devices, consider using something else. I can recommend [`cargo-xcode`](https://lib.rs/crates/cargo-xcode), this gives the most control and helps with the complex process of notarizing and submitting to the app store.
+This is a development tool only; when deploying on real devices, consider using something else. I can recommend [`cargo-xcode`](https://lib.rs/crates/cargo-xcode), this gives the most control and helps with the complex process of notarizing and submitting to the App Store.
 
 
 ## Env vars
