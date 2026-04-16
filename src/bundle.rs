@@ -7,7 +7,7 @@ use tracing::{debug, error, warn};
 
 use crate::{Binary, CargoEnv, Platform};
 
-pub(crate) fn should_bundle(binary: &Binary) -> bool {
+pub(crate) fn should_bundle(_binary: &Binary) -> bool {
     // As an optimization, avoid bundling the binary if we don't need to.
     //
     // TODO: Which places in UIKit assume a bundled binary? And how is it
@@ -15,7 +15,7 @@ pub(crate) fn should_bundle(binary: &Binary) -> bool {
     // binary to actually be bundled? Are there places in AppKit that also
     // work differently?
     // binary.info_plist_data.is_some()
-    false
+    true
 }
 
 pub fn write_bundle(

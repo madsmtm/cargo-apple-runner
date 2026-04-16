@@ -7,9 +7,9 @@
 //! - <https://developer.apple.com/documentation/technotes/tn3126-inside-code-signing-hashes>
 //! - <https://developer.apple.com/documentation/technotes/tn3127-inside-code-signing-requirements>
 //! - <https://developer.apple.com/documentation/technotes/tn3161-inside-code-signing-certificates>
-use std::{fmt::Write, path::Path, process::Command};
+use std::{path::Path, process::Command};
 
-use anyhow::{Context, Result, bail};
+use anyhow::Result;
 use tracing::debug;
 
 use crate::{Binary, Platform, util};

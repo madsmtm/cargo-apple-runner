@@ -23,7 +23,6 @@ use std::{
     collections::HashMap,
     ffi::{OsStr, OsString},
     fs,
-    os::unix::process::ExitStatusExt,
     path::{Path, PathBuf},
     process::{Command, ExitStatus},
     str::FromStr,
@@ -32,7 +31,7 @@ use std::{
 use anyhow::{Context, Result, bail};
 use object::Architecture;
 use serde::{Deserialize, Deserializer, de::Error as _};
-use tracing::{error, trace};
+use tracing::{debug, error, trace};
 
 use crate::{Binary, OSVersion, Platform, util};
 
@@ -45,6 +44,7 @@ pub fn get_temp_dir(udid: &str) -> Result<PathBuf> {
     cmd.arg("getenv");
     cmd.arg(udid);
     cmd.arg("TMPDIR");
+    debug!("{cmd:?}");
     let stdout = util::command_stdout(cmd)?;
 
     let stdout = stdout.strip_suffix(b"\n").unwrap_or(&stdout);
@@ -69,6 +69,7 @@ pub fn get_device(binary: &Binary) -> Result<(Runtime, Device)> {
     cmd.arg("simctl");
     cmd.arg("list");
     cmd.arg("--json");
+    debug!("{cmd:?}");
     let stdout = util::command_stdout(cmd)?;
 
     let info: SimulatorInfo = serde_json::from_slice(&stdout).context("failed parsing JSON")?;
@@ -242,6 +243,7 @@ pub fn spawn<A: AsRef<OsStr>>(
     // Set `CARGO_TARGET_TMPDIR` to `TMPDIR`. See also <https://github.com/rust-lang/cargo/issues/16427>.
     cmd.env("SIMCTL_CHILD_CARGO_TARGET_TMPDIR", temp_dir);
 
+    debug!("{cmd:?}");
     let status = cmd
         .status()
         .with_context(|| format!("failed spawning executable {exe_path:?}"))?;
@@ -276,12 +278,16 @@ pub fn install_and_launch<A: AsRef<OsStr>>(
     cmd.arg("install");
     cmd.arg(udid);
     cmd.arg(bundle_path);
+    debug!("{cmd:?}");
+    let _ = util::command_stdout(cmd)?;
 
     // Launch the application.
     let mut cmd = Command::new("xcrun");
     cmd.arg("simctl");
     cmd.arg("launch");
     cmd.arg("--console");
+    // TODO: Allow controlling this somehow?
+    // cmd.arg("--wait-for-debugger");
     cmd.arg(udid);
     cmd.arg(bundle_identifier);
     cmd.args(args);
@@ -289,8 +295,16 @@ pub fn install_and_launch<A: AsRef<OsStr>>(
     // Set `CARGO_TARGET_TMPDIR` to `TMPDIR`. See also <https://github.com/rust-lang/cargo/issues/16427>.
     cmd.env("SIMCTL_CHILD_CARGO_TARGET_TMPDIR", temp_dir);
 
+    debug!("{cmd:?}");
+    let status = cmd
+        .status()
+        .with_context(|| format!("failed launching application {bundle_identifier:?}"))?;
+
+    // TODO: Pipe stdout and filter first line which contains the bundle ID
+    // and the process ID.
+
     lock_file.unlock()?;
-    Ok(ExitStatus::from_raw(0))
+    Ok(status)
 }
 
 /// Environment variables to set for `xcrun` invocations.

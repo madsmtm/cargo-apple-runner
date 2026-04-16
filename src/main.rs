@@ -74,6 +74,8 @@ fn run() -> Result<ExitCode> {
     )
     .with_context(|| format!("failed signing {executable:?}"))?;
 
+    // TODO: Execution policy exception?
+
     // TODO: Support "Designed for iPad" run mode somehow?
     match binary.platform() {
         Platform::MACOS | Platform::MACCATALYST => {
@@ -89,8 +91,7 @@ fn run() -> Result<ExitCode> {
         | Platform::TVOSSIMULATOR
         | Platform::WATCHOSSIMULATOR
         | Platform::VISIONOSSIMULATOR => {
-            let (runtime, device) = simctl::get_device(&binary)?;
-            dbg!(&runtime, &device);
+            let (_runtime, device) = simctl::get_device(&binary)?;
             let status = if binary.gui_like {
                 let bundle_identifier = bundle_identifier.context("must have bundle identifier")?;
                 simctl::install_and_launch(&device.udid, &bundle_path, &bundle_identifier, args)?

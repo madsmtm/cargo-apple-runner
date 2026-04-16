@@ -182,6 +182,7 @@ impl Binary {
         self.version().sdk
     }
 
+    #[expect(dead_code)]
     pub(crate) fn needs_info_plist(&self) -> bool {
         // TODO: Probably? Needs to be tested
         !matches!(
