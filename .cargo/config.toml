@@ -3,6 +3,7 @@
 runner = [
     "cargo",
     "run",
+    "--quiet",
     # Avoid infinite recursion by overriding the config.
     "--config=target.aarch64-apple-darwin.runner=\"env\"",
     "--config=target.x86_64-apple-darwin.runner=\"env\"",
