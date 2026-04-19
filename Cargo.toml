@@ -13,6 +13,7 @@ edition = "2024"
 rust-version = "1.90"
 repository = "https://github.com/madsmtm/cargo-apple-runner"
 license = "Zlib OR Apache-2.0 OR MIT"
+exclude = [".cargo", ".github", "tests"]
 
 [dependencies]
 object = "0.39.0"
