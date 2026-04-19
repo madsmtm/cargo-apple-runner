@@ -21,7 +21,7 @@ jobs:
     - run: cargo binstall cargo-apple-runner
 
     - name: Install `cargo-apple-runner`
-    - uses: taiki-e/install-action@v2
+      uses: taiki-e/install-action@v2
       with:
         tool: cargo-apple-runner
 
