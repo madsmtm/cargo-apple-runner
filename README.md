@@ -175,8 +175,10 @@ at your option.
 ## Credits
 
 - Original idea for this by [@simlay](https://github.com/simlay): https://simlay.net/posts/rust-target-runner-for-ios/
-- [cargo-bundle](https://github.com/burtonageo/cargo-bundle)
-- [cargo-dinghy](https://github.com/sonos/dinghy)
-- [cargo-mobile2](https://github.com/tauri-apps/cargo-mobile2)
-- [tauri-bundler](https://crates.io/crates/tauri-bundler)
-- [apple-platform-rs](https://github.com/indygreg/apple-platform-rs)
+- [`cargo-bundle`](https://github.com/burtonageo/cargo-bundle)
+- [`cargo-dinghy`](https://github.com/sonos/dinghy)
+- [`cargo-mobile2`](https://github.com/tauri-apps/cargo-mobile2)
+- [`tauri-bundler`](https://crates.io/crates/tauri-bundler)
+- [`apple-platform-rs`](https://github.com/indygreg/apple-platform-rs)
+- [`fruitbasket`](https://github.com/mrmekon/fruitbasket)
+- [`fbidb`](https://fbidb.io)
