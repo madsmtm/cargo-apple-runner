@@ -19,6 +19,8 @@ jobs:
 
     - uses: cargo-bins/cargo-binstall@main
     - run: cargo binstall cargo-apple-runner
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
 
     - name: Install `cargo-apple-runner`
       uses: taiki-e/install-action@v2
