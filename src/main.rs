@@ -10,6 +10,9 @@ fn main() -> ExitCode {
     //
     // We should write to stderr, things like `cargo nextest` assumes that
     // test harnesses write output in a certain format to stdout.
+    //
+    // TODO: Better error messages using `annotate-snippets`? Or at least
+    // something similar, I would like to emit proper `help` notes.
     tracing_subscriber::fmt()
         .with_env_filter(
             EnvFilter::builder()
@@ -91,6 +94,7 @@ fn run() -> Result<ExitCode> {
         | Platform::TVOSSIMULATOR
         | Platform::WATCHOSSIMULATOR
         | Platform::VISIONOSSIMULATOR => {
+            // TODO: Allow selecting specific device with `DEVICE="..."` env var?
             let (_runtime, device) = simctl::get_device(&binary)?;
             let status = if binary.gui_like {
                 let bundle_identifier = bundle_identifier.context("must have bundle identifier")?;

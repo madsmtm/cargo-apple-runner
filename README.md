@@ -43,7 +43,7 @@ cargo run --example my_example --target aarch64-apple-ios-macabi
 Host: Requires at least macOS 10.12, [same as `rustc`](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html#os-version).
 Targets: macOS, Mac Catalyst, iOS, tvOS, watchOS and visionOS.
 Simulators: Uses `xcrun simctl`, only tested on Xcode 9.2 and above.
-Devices: Yet unsupported, will use `devicectl` and fall back to `ios-deploy` on older Xcode.
+Devices: Yet unsupported, will use `devicectl` (see [#1](https://github.com/madsmtm/cargo-apple-runner/issues/1)) and fall back to `ios-deploy` (see [#2](https://github.com/madsmtm/cargo-apple-runner/issues/2)) on older Xcode.
 
 
 ## Bundling
@@ -51,6 +51,9 @@ Devices: Yet unsupported, will use `devicectl` and fall back to `ios-deploy` on 
 `cargo-apple-runner` will inspect your binary, and guess whether it needs to bundle it based on a few factors:
 - Whether your binary links AppKit, UIKit, WatchKit and similar system GUI frameworks.
 - TODO: Maybe something more?
+- TODO: Allow overriding this somehow?
+
+Note that this might mean that for documentation tests to be runnable in parallel with `cargo nextest`, you might need to use the [`standalone_crate` attribute](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html#:~:text=standalone_crate) on GUI tests to avoid these making your other doc tests need to be launched as well.
 
 
 ### Custom `Info.plist`
@@ -66,7 +69,7 @@ If this is not done, `cargo-apple-runner` will generate a reasonable `Info.plist
 
 ## Signing
 
-TODO.
+`cargo-apple-runner` will sign your application with whatever signing identity is passed in the `CODE_SIGN_IDENTITY` environment variable. If not set, it will default to "ad-hoc" signing.
 
 
 ### Custom entitlements
@@ -92,12 +95,14 @@ rustflags = ["-Clink-arg=-Wl,-no_adhoc_codesign"]
 
 ## Launching
 
-TODO.
+Similar to when bundling, `cargo-apple-runner` will also guess whether it needs to launch your binary, or whether it can simply spawn it.
+
+Spawning is generally more efficient, since it can be done in parallel, while launching must be serialized (as only a single application can be the frontmost application).
 
 
 ## Usage in CI
 
-Example GitHub Actions workflow that runs tests on macOS, Mac Catalyst, iOS Simulator and tvOS Simulator.
+Example GitHub Actions workflow that runs tests on macOS, Mac Catalyst, the iOS simulator, the tvOS simulator and the visionOS simulator.
 
 ```yaml
 # ...
@@ -148,149 +153,13 @@ jobs:
 ```
 
 
-## Why?
-
-The user-experience of `cargo run --target aarch64-apple-ios-sim` when working in multi-.
-
-
-## Design choices
-
-Don't parse any `.toml` files; everything is embedded in the binary instead. This makes it much easier to support test binaries.
-
-Don't automatically create and boot simulator devices: we'll have a hard time doing this correctly when running under `cargo test` (we'd need to do a bit of IPC between `cargo-apple-runner` processes), and it's unclear what we should do afterwards (should we shut down the device if we booted it?)
-
-
 ## Limitations
 
-Only supports bundled assets; reading from other directories may fail (we don't copy the entire workspace to the device).
+This is intended as a development tool only; when deploying on real devices, consider using something else. I can recommend [`cargo-xcode`](https://lib.rs/crates/cargo-xcode), this gives the most control and helps with the complex process of notarizing and submitting to the App Store.
 
-Environment variables.
+Will only supports bundled assets (at least after [#5](https://github.com/madsmtm/cargo-apple-runner/issues/5)), reading from other directories may fail (we don't copy the entire workspace to the device).
 
-Use `SIMCTL_CHILD_*` to pass env vars to simctl instances.
-
-This is a development tool only; when deploying on real devices, consider using something else. I can recommend [`cargo-xcode`](https://lib.rs/crates/cargo-xcode), this gives the most control and helps with the complex process of notarizing and submitting to the App Store.
-
-
-## Env vars
-
-Easily pass onwards to runner? Maybe extract from Cargo's `[env]` table, along with a few standard `CARGO_*` env vars?
-
-Host `DYLD_FALLBACK_LIBRARY_PATH` env var needs to copy the directory probably? To make dynamic loading work properly.
-- Probably also needs to be patched (`install_name_tool`) and codesigned.
-
-https://doc.rust-lang.org/cargo/reference/environment-variables.html#dynamic-library-paths
-
-
-## Implementation
-
-Init:
-- Commandline args?
-- Configuration file?
-- Inspect binary
-  - Supported platform (`otool -l`) (actually platformS, see `lipo`)
-
-Create bundle:
-- Create `.app` folder structure
-- Add `Info.plist` and assets from above
-- Create entitlements and DER entitlements
-<!-- - Patch and copy the binary:
-  - Remove codesigning (it's gonna break with the below)
-  - Insert desired `__entitlements`/`__ents_der` sections. -->
-- Sign `.app`.
-
-Prepare for run:
-- Register execution policy exception (for anything that's gonna run with the host kernel at least)
-- Touch
-- `lsregister` (for macOS apps)
-
-Run:
-```sh
-xcrun simctl install booted ./target/aarch64-apple-ios-sim/debug/examples/bundle/ios/softbuffer.app
-xcrun simctl launch --console booted raytracing.example.softbuffer
-# OR
-xcrun simctl spawn booted ./target/aarch64-apple-ios-sim/examples/raytracing
-```
-- Select specific device with `DEVICE="..."`?
-- Use some sort of device-global file lock to sequentially launch tests?
-  - We need some way to say "this test needs to be bundled and launched" and "this test can be run in parallel / just spawned".
-    - Maybe `embed_plist`? Or some other data in the binary - would make it workable with doc tests too.
-      - Maybe whether the binary links `UIKit`? Or calls `UIApplicationMain`?
-      - `standalone_crate` attribute probably useful here?
-
-
-## Codesign
-
-
-`derq` (Generate DER entitlements)
-`codesign`
-`-Wl,-no_adhoc_codesign`?
-
-
-
-
-## How do we nicely handle embedded / associated binaries?
-
-UI tests.
-Extensions.
-PlugIns.
-Frameworks and dynamic libraries.
-
-Will probably need a `cargo-ios` subcommand for that.
-
-
-## Working with hot reloading?
-
-`subsecond` todo
-
-
-
-
-
-
-## Planned
-
-Support for more advanced features that apps may end up needing, such as:
-- Entitlements.
-- Application Extensions and Plug-Ins.
-- UI testing.
-
-Unsure yet _how_ we're going to support it though.
-
-
-# TODO
-
-
-- https://github.com/cargo-bins/cargo-binstall + https://github.com/taiki-e/install-action/blob/main/DEVELOPMENT.md + https://github.com/taiki-e/upload-rust-binary-action
-
-- A test runner where running `cargo test --target aarch64-apple-ios-sim` runs UI tests (including screenshot-based testing probably?)
-    - Will run on host, but send the binary to the device.
-    - Needs metadata? Otherwise, how can the runner differentiate between needing to package the app, and not needing to?
-    - Maybe we just always package, that'll work better for running things on a real device.
-    - Custom test runner must run tests on main thread.
-- Better error messages using `annotate-snippets`? Or at least something similar, I would like to emit `help` notes.
-
-Needs some sort of integration with `cargo-apple-runner`, because we need to include `XCTest.framework` and `XCUIAutomation.framework` in the bundle.
-
-```rust
-// TODO: How do we specify the binary that we want these tests to run against?
-// `tags`/`tagsToRun`/`tagsToSkip` in the configuration?
-use xctest::prelude::*;
-
-#[ui_test]
-fn test(mtm: MainThreadMarker) {
-    let app = XCUIApplication::new(mtm);
-    let device = XCUIDevice::sharedDevice(mtm);
-    let screen = XCUIScreen::mainScreen(mtm);
-    // ...
-}
-
-#[ui_test]
-fn test2(app: &XCUIApplication) {
-    // ...
-}
-```
-
-https://github.com/sonos/dinghy/blob/main/docs/ios.md#additional-requirements
+Only a few Cargo environment variables are automatically passed onwards to the simulator, use `SIMCTL_CHILD_*` to explicitly pass the environment variables you want to pass to the program being run.
 
 
 ## License
