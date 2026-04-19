@@ -5,6 +5,7 @@ on:
   push:
     branches:
     - main
+    - test
 
 permissions:
   contents: read
@@ -15,6 +16,12 @@ jobs:
 
     steps:
     - uses: taiki-e/checkout-action@v1
+
+    - uses: cargo-bins/cargo-binstall@main
+    - run: cargo binstall cargo-apple-runner
+
+    - name: Install `cargo-apple-runner`
+      uses: taiki-e/install-action@cargo-apple-runner
 
     - name: Install Rustup targets
       run: rustup target add aarch64-apple-ios-macabi aarch64-apple-ios-sim x86_64-apple-ios aarch64-apple-tvos-sim aarch64-apple-watchos-sim
