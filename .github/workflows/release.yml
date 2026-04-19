@@ -15,14 +15,14 @@ jobs:
 
       - uses: taiki-e/create-gh-release-action@v1
 
-      - uses: rustup target add aarch64-apple-darwin
+      - run: rustup target add aarch64-apple-darwin
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           bin: cargo-apple-runner
           target: aarch64-apple-darwin
           build-tool: cargo
 
-      - uses: rustup target add x86_64-apple-darwin
+      - run: rustup target add x86_64-apple-darwin
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           bin: cargo-apple-runner
