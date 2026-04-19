@@ -45,6 +45,8 @@ pub fn codesign(
     cmd.arg("--sign");
     cmd.arg(signing_identity);
 
+    // TODO: Add `get-task-allow` entitlements by default?
+    // To fix <https://github.com/rust-lang/rust/issues/107033>.
     if let Some(entitlements_path) = entitlements_path {
         cmd.arg("--entitlements");
         cmd.arg(entitlements_path);
