@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+    - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+    - uses: taiki-e/checkout-action@v1
+
+    - name: Install Rustup targets
+      run: rustup target add aarch64-apple-ios-macabi aarch64-apple-ios-sim x86_64-apple-ios aarch64-apple-tvos-sim aarch64-apple-watchos-sim
+
+    - uses: Swatinem/rust-cache@v2
+
+    # You can find names of existing simulator devices at:
+    # https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
+    - name: Start iOS simulator
+      run: xcrun simctl boot "iPhone 17"
+    - name: Start tvOS simulator
+      run: xcrun simctl boot "Apple TV"
+    - name: Start second tvOS simulator (to ensure that `cargo-apple-runner` doesn't crash on that)
+      run: xcrun simctl boot "Apple TV 4K (3rd generation)"
+    - name: Start watchOS simulator
+      run: xcrun simctl boot "Apple Vision Pro"
+    - name: Start visionOS simulator
+      run: xcrun simctl boot "Apple Watch SE 3 (40mm)"
+
+    - name: Run tests on host macOS
+      run: cargo test
+    - name: Run Mac Catalyst tests
+      run: cargo test --target aarch64-apple-ios-macabi
+    - name: Run iOS simulator tests
+      run: cargo test --target aarch64-apple-ios-sim
+    - name: Run iOS x86_64 simulator tests
+      run: cargo test --target x86_64-apple-ios
+    - name: Run tvOS simulator tests
+      run: cargo test --target aarch64-apple-tvos-sim
+    - name: Run visionOS simulator tests
+      run: cargo test --target aarch64-apple-visionos-sim
+    - name: Run watchOS simulator tests
+      run: cargo test --target aarch64-apple-watchos-sim
