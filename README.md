@@ -105,51 +105,70 @@ Spawning is generally more efficient, since it can be done in parallel, while la
 Example GitHub Actions workflow that runs tests on macOS, Mac Catalyst, the iOS simulator, the tvOS simulator and the visionOS simulator.
 
 ```yaml
-# ...
+name: CI
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches:
+    - main
 
 jobs:
   test:
     runs-on: macos-latest
 
-    # Configure the job to use `cargo-apple-runner` when launching our binaries.
-    # (Alternatively, you could commit the `.cargo/config.toml` above).
+    strategy:
+      matrix:
+        include:
+        - target: aarch64-apple-darwin
+        - target: aarch64-apple-ios-macabi
+        - target: aarch64-apple-ios-sim
+          simulator: "iPhone 17"
+        - target: aarch64-apple-tvos-sim
+          simulator: "Apple TV"
+        - target: aarch64-apple-visionos-sim
+          simulator: "Apple Vision Pro"
+        - target: aarch64-apple-watchos-sim
+          simulator: "Apple Watch SE 3 (40mm)"
+
     env:
+      # Configure the job to use `cargo-apple-runner` when launching our binaries.
+      # (Alternatively, you could commit the `.cargo/config.toml` above).
       CARGO_TARGET_AARCH64_APPLE_DARWIN_RUNNER: cargo-apple-runner
       CARGO_TARGET_AARCH64_APPLE_IOS_MACABI_RUNNER: cargo-apple-runner
       CARGO_TARGET_AARCH64_APPLE_IOS_SIM_RUNNER: cargo-apple-runner
       CARGO_TARGET_AARCH64_APPLE_TVOS_SIM_RUNNER: cargo-apple-runner
       CARGO_TARGET_AARCH64_APPLE_VISIONOS_SIM_RUNNER: cargo-apple-runner
+      CARGO_TARGET_AARCH64_APPLE_WATCHOS_SIM_RUNNER: cargo-apple-runner
+      CARGO_TARGET_AARCH64_APPLE_WATCHOS_SIM_RUNNER: cargo-apple-runner
+      # Make `--target` default to the target from the matrix.
+      CARGO_BUILD_TARGET: ${{ matrix.target }}
 
     steps:
     - uses: taiki-e/checkout-action@v1
 
-    - name: Install Rustup targets
-      run: rustup target add aarch64-apple-ios-macabi aarch64-apple-ios-sim aarch64-apple-tvos-sim
-
     - name: Install `cargo-apple-runner`
       uses: taiki-e/install-action@cargo-apple-runner
+
+    - name: Install Rustup target
+      run: rustup target add ${{ matrix.target }}
 
     - uses: Swatinem/rust-cache@v2
 
     # You can find names of existing simulator devices at:
     # https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
-    - name: Start iOS simulator
-      run: xcrun simctl boot "iPhone 17"
-    - name: Start tvOS simulator
-      run: xcrun simctl boot "Apple TV"
-    - name: Start visionOS simulator
-      run: xcrun simctl boot "Apple Vision Pro"
+    - name: Start simulator
+      if: ${{ matrix.simulator }}
+      run: xcrun simctl boot ${{ matrix.simulator }}
 
-    - name: Run tests on host macOS
+    - name: Build
+      run: cargo build
+
+    - name: Test
       run: cargo test
-    - name: Run Mac Catalyst tests
-      run: cargo test --target aarch64-apple-ios-macabi
-    - name: Run iOS simulator tests
-      run: cargo test --target aarch64-apple-ios-sim
-    - name: Run tvOS simulator tests
-      run: cargo test --target aarch64-apple-tvos-sim
-    - name: Run visionOS simulator tests
-      run: cargo test --target aarch64-apple-visionos-sim
 ```
 
 
