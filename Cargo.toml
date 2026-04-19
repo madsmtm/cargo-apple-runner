@@ -1,6 +1,6 @@
 [package]
 name = "cargo-apple-runner"
-version = "0.1.0"
+version = "0.0.1" # Will go to 0.1.0 once we support running on device!
 description = "Cargo runner for bundling and launching applications on simulator / on device"
 keywords = ["cargo", "macos", "ios", "xcode"]
 categories = [
