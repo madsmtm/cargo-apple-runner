@@ -40,10 +40,13 @@ cargo run --example my_example --target aarch64-apple-ios-macabi
 
 ## Supported platforms and requirements
 
-Host: Requires at least macOS 10.12, [same as `rustc`](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html#os-version).
-Targets: macOS, Mac Catalyst, iOS, tvOS, watchOS and visionOS.
-Simulators: Uses `xcrun simctl`, only tested on Xcode 9.2 and above.
-Devices: Yet unsupported, will use `devicectl` (see [#1](https://github.com/madsmtm/cargo-apple-runner/issues/1)) and fall back to `ios-deploy` (see [#2](https://github.com/madsmtm/cargo-apple-runner/issues/2)) on older Xcode.
+**Host**: Requires at least macOS 10.12, [same as `rustc`](https://doc.rust-lang.org/rustc/platform-support/apple-darwin.html#os-version).
+
+**Targets**: macOS, Mac Catalyst, iOS, tvOS, watchOS and visionOS.
+
+**Simulators**: Uses `xcrun simctl`, only tested on Xcode 9.2 and above.
+
+**Devices**: Yet unsupported, will use `devicectl` (see [#1](https://github.com/madsmtm/cargo-apple-runner/issues/1)) and fall back to `ios-deploy` (see [#2](https://github.com/madsmtm/cargo-apple-runner/issues/2)) on older Xcode.
 
 
 ## Bundling
