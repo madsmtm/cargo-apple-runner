@@ -165,7 +165,7 @@ jobs:
     # https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md#installed-simulators
     - name: Start simulator
       if: ${{ matrix.simulator }}
-      run: xcrun simctl boot ${{ matrix.simulator }}
+      run: xcrun simctl boot "${{ matrix.simulator }}"
 
     - name: Build
       run: cargo build
