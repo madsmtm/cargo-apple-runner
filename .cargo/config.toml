@@ -5,6 +5,10 @@ runner = [
     "run",
     "--quiet",
     # Avoid infinite recursion by overriding the config.
+    #
+    # NOTE: To support`CARGO_BUILD_TARGET` this requires
+    # `--target=host` , but we don't have that, so we'll
+    # live without.
     "--config=target.aarch64-apple-darwin.runner=\"env\"",
     "--config=target.x86_64-apple-darwin.runner=\"env\"",
     "--config=target.i686-apple-darwin.runner=\"env\"",
